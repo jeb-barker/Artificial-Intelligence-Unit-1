@@ -71,7 +71,9 @@ msg = input("Type a string:")
 maxs = "a"
 print("11. Most occurred char: ", ([maxs := c if msg.strip().count(c) >= msg.strip().count(maxs) else maxs for c in msg.strip()])[-1])
 print("12. List of words starting and ending with vowels: ", [vow for vow in msg.strip().lower().split() if vow[0] in 'aeiou' and vow[-1] in 'aeiou'])
-print("13. Capitalize starting letter of every word: ", )
+print("13. Capitalize starting letter of every word: ", *[cap.capitalize() for cap in msg.strip().split()])
+print("14. Reverse every word: ", *[cap[::-1] for cap in msg.strip().split()])
+print("15. Find the first and replace with the second: ", msg.strip().replace(msg.strip().split()[0], msg.strip().split()[1])[msg.find(msg.strip().split()[1])+len(msg.strip().split()[1]):])
 
 # 16. With an input of a string, removes all duplicate characters from a string.  Eg. detection -> detcion
 
