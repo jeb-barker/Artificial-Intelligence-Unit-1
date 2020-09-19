@@ -73,13 +73,18 @@ print("11. Most occurred char: ", ([maxs := c if msg.strip().count(c) >= msg.str
 print("12. List of words starting and ending with vowels: ", [vow for vow in msg.strip().lower().split() if vow[0] in 'aeiou' and vow[-1] in 'aeiou'])
 print("13. Capitalize starting letter of every word: ", *[cap.capitalize() for cap in msg.strip().split()])
 print("14. Reverse every word: ", *[cap[::-1] for cap in msg.strip().split()])
-print("15. Find the first and replace with the second: ", msg.strip().replace(msg.strip().split()[0], msg.strip().split()[1])[msg.find(msg.strip().split()[1])+len(msg.strip().split()[1]):])
+print("15. Find the first and replace with the second: ", msg.strip().replace(msg.strip().split()[0], msg.strip().split()[1])[msg.find(msg.strip().split()[1])+len(msg.strip().split()[1])+2:])
 
 # 16. With an input of a string, removes all duplicate characters from a string.  Eg. detection -> detcion
-
+msg = input("Type a string to remove all duplicate chars: ")
+re = ""
+print("16. Remove all duplicat chars: ", [re := re + letter for letter in msg.strip() if letter not in re][-1])
 
 # 17. Given an input of a string, determines whether the string contains only digits.
+msg = input("Type a string to check if it has only digits or not:")
+print("17. Is a number?: ", str(msg.isnumeric()))
 # 18. If #17 prints True, determines whether the string contains only 0 and 1 characters, and if so assumes it is a binary string,
+print("18. It is a binary number:" if msg.isnumeric() else )
 # converts it to a number, and prints out the decimal value.
 
 
