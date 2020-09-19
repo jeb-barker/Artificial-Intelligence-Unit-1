@@ -70,7 +70,8 @@ print("10. Evaluate f(k)=k^2 - 3k + 2 from " + msg.strip().split()[0] + " to " +
 msg = input("Type a string:")
 maxs = "a"
 print("11. Most occurred char: ", ([maxs := c if msg.strip().count(c) >= msg.strip().count(maxs) else maxs for c in msg.strip()])[-1])
-print("12. List of words starting and ending with vowels: ", [])
+print("12. List of words starting and ending with vowels: ", [vow for vow in msg.strip().lower().split() if vow[0] in 'aeiou' and vow[-1] in 'aeiou'])
+print("13. Capitalize starting letter of every word: ", )
 
 # 16. With an input of a string, removes all duplicate characters from a string.  Eg. detection -> detcion
 
