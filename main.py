@@ -97,13 +97,15 @@ print("19. Are {} and {} anagram?: ".format(n1, n2), str(True) if sorted(n1) == 
 
 
 # 21. Given an input of a string, find the longest palindrome within the string.
-msg = input("Type a string to find the longest palindrome:")
-print("21. Longest palindrome within the string: ", [msg.strip()[i:j+1] for i, j in range(len(msg)) if remm.lower().strip() == remm.lower().strip()[::-1]][0])
+msg = input("Type a string to find the longest palindrome:").strip().replace(" ", "")
+print("21. Longest palindrome within the string: ", max([msg.strip()[i:j] for j in range(len(msg)) for i in range(j) if msg.lower().strip()[i:j] == (msg.lower().strip()[i:j])[::-1]], key=len))
 
 
 # 22. Given an input of a string, find all the permutations of a string.
+msg = input("Type a string to do permutation:")
+print("all permutations: ", [msg[i:j] for i in range(len(msg.strip())) for j in range(len(msg.strip())) if len(msg[i:j]) == len(msg)])
 # 23. Given the input string from #22, find all the unique permutations of a string.
-
+print("all unique permutations: ")
 
 # 24. Given an input of a string, find a longest non-decreasing subsequence within the string (according to ascii value).
 
