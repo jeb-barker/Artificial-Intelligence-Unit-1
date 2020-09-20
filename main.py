@@ -84,17 +84,21 @@ print("16. Remove all duplicat chars: ", [re := re + letter for letter in msg.st
 msg = input("Type a string to check if it has only digits or not:")
 print("17. Is a number?: ", str(msg.isnumeric()))
 # 18. If #17 prints True, determines whether the string contains only 0 and 1 characters, and if so assumes it is a binary string,
-print("18. It is a binary number:" if msg.isnumeric() else )
+print(("18. It is a binary number: " + str(int(msg, 2))) if msg.isnumeric() and (set(msg.strip()) == {'0', '1'} or set(msg.strip()) == {'0'} or set(msg.strip()) == {'1'}) else "18. It is not a binary number.")
 # converts it to a number, and prints out the decimal value.
 
 
 # 19. Write a script that accepts two strings as input and determines whether the two strings are anagrams of each other.
-
+n1 = input("Type the first string to check anagram:")
+n2 = input("Type the second string to check anagram:")
+print("19. Are {} and {} anagram?: ".format(n1, n2), str(True) if sorted(n1) == sorted(n2) else str(False))
 
 # 20. Given an input filename, if the file exists and is an image, find the dimensions of the image.
 
 
 # 21. Given an input of a string, find the longest palindrome within the string.
+msg = input("Type a string to find the longest palindrome:")
+print("21. Longest palindrome within the string: ", [remm.lower.strip() for remm in msg.strip() if remm.lower().strip() == remm.lower().strip()[::-1]][0])
 
 
 # 22. Given an input of a string, find all the permutations of a string.
