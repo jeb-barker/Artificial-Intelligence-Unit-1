@@ -5,6 +5,9 @@
 
 # 1. Given an input of a space-separated list of any length of integers, output the sum of them.
 # 2. Output the list of those integers (from #1) that are divisible by three.
+from itertools import permutations
+from PIL import Image, UnidentifiedImageError
+
 msg = input("list of numbers: ")
 # print(msg)
 # print(msg.split())
@@ -38,8 +41,7 @@ print("5. Is prime? " + (str(False) if True in [int(msg) % n == 0 for n in range
 # 6. Calculate the area of a triangle given three side lengths.  eg. 13 14 15 -> 84
 msg = input("Type three sides of a triangle:")
 p = sum([int(x) for x in msg.strip().split()]) / 2
-print("6. The area of " + msg + " is " + str(int((p * (p - int(msg.strip().split()[0])) * (
-            p - int(msg.strip().split()[1])) * (p - int(msg.strip().split()[2]))) ** .5)))
+print("6. The area of " + msg + " is " + str((p * (p - int(msg.strip().split()[0])) * (p - int(msg.strip().split()[1])) * (p - int(msg.strip().split()[2]))) ** .5))
 
 # 7. Given a input of a string, remove all punctuation from the string.
 #    eg. "Don't quote me," she said. -> Dontquotemeshesaid
@@ -69,7 +71,7 @@ print("10. Evaluate f(k)=k^2 - 3k + 2 from " + msg.strip().split()[0] + " to " +
 # 	eg.    b Ba baby boy ->  BaaBay Baoy
 msg = input("Type a string:")
 maxs = "a"
-print("11. Most occurred char: ", ([maxs := c if msg.strip().count(c) >= msg.strip().count(maxs) else maxs for c in msg.strip()])[-1])
+print("11. Most occurred char: ", *{value for index, value in enumerate([c for c in msg.strip()]) if msg.count(msg.strip()[index])==max([msg.strip().count(c) for c in msg.strip()])})
 print("12. List of words starting and ending with vowels: ", [vow for vow in msg.strip().lower().split() if vow[0] in 'aeiou' and vow[-1] in 'aeiou'])
 print("13. Capitalize starting letter of every word: ", *[cap.capitalize() for cap in msg.strip().split()])
 print("14. Reverse every word: ", *[cap[::-1] for cap in msg.strip().split()])
@@ -94,7 +96,13 @@ n2 = input("Type the second string to check anagram:")
 print("19. Are {} and {} anagram?: ".format(n1, n2), str(True) if sorted(n1) == sorted(n2) else str(False))
 
 # 20. Given an input filename, if the file exists and is an image, find the dimensions of the image.
-
+try:
+    image = Image.open(input("Type the image file name:").strip())
+    print("20. Image dimension: " + str(image.width) + " x " + str(image.height))
+except FileNotFoundError:
+    print("20. That's not a file")
+except UnidentifiedImageError:
+    print("20. PIL can't open this.")
 
 # 21. Given an input of a string, find the longest palindrome within the string.
 msg = input("Type a string to find the longest palindrome:").strip().replace(" ", "")
@@ -103,13 +111,14 @@ print("21. Longest palindrome within the string: ", max([msg.strip()[i:j] for j 
 
 # 22. Given an input of a string, find all the permutations of a string.
 msg = input("Type a string to do permutation:")
-print("all permutations: ", [msg[i:j] for i in range(len(msg.strip())) for j in range(len(msg.strip())) if len(msg[i:j]) == len(msg)])
+# WITHOUT ITERTOOLS: print("22. all permutations: ", str([msg[i:j] for i in range(len(msg.strip()) + 1) for j in range(len(msg.strip()) + 1) if len(msg[i:j]) == len(msg.strip())]))
+print("22. all permutations: ", str(["".join(perm) for perm in permutations(msg.strip())]))
 # 23. Given the input string from #22, find all the unique permutations of a string.
-print("all unique permutations: ", {msg[i:j] for i in range(len(msg.strip())) for j in range(len(msg.strip())) if len(msg[i:j]) == len(msg)})
-
+# WITHOUT ITERTOOLS: print("23. all unique permutations: ", str({msg[i:j] for i in range(len(msg.strip()) + 1) for j in range(len(msg.strip()) + 1) if len(msg[i:j]) == len(msg.strip())}))
+print("22. all unique permutations: ", str({"".join(perm) for perm in permutations(msg.strip())}))
 # 24. Given an input of a string, find a longest non-decreasing subsequence within the string (according to ascii value).
 msg = input("Type a string to find the longest non-decreasing sub:")
-print("longest non-decreasing sub: ", max([msg.strip()[i:j] for j in range(len(msg.strip())) for i in range(len(msg.strip())) if all([x <= y for x in msg.strip()[i:j] for y in (msg.strip()[i+1:j+1] if j+1 <= len(msg.strip()) else msg.strip()[i:j])])], key=len))
+print("longest non-decreasing sub: ", max([msg.strip()[i:j] for j in range(len(msg.strip())) for i in range(len(msg.strip())) if all([x <= y for x,y in zip(msg.strip()[i:j], msg.strip()[i+1:j])])], key=len))
 """
 list of numbers: 1 2 3 4 5 6 7 8 9 10
  1. sum = 55
