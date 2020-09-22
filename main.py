@@ -105,7 +105,7 @@ print("21. Longest palindrome within the string: ", max([msg.strip()[i:j] for j 
 msg = input("Type a string to do permutation:")
 print("all permutations: ", [msg[i:j] for i in range(len(msg.strip())) for j in range(len(msg.strip())) if len(msg[i:j]) == len(msg)])
 # 23. Given the input string from #22, find all the unique permutations of a string.
-print("all unique permutations: ")
+print("all unique permutations: ", {msg[i:j] for i in range(len(msg.strip())) for j in range(len(msg.strip())) if len(msg[i:j]) == len(msg)})
 
 # 24. Given an input of a string, find a longest non-decreasing subsequence within the string (according to ascii value).
 
