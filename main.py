@@ -108,7 +108,8 @@ print("all permutations: ", [msg[i:j] for i in range(len(msg.strip())) for j in 
 print("all unique permutations: ", {msg[i:j] for i in range(len(msg.strip())) for j in range(len(msg.strip())) if len(msg[i:j]) == len(msg)})
 
 # 24. Given an input of a string, find a longest non-decreasing subsequence within the string (according to ascii value).
-
+msg = input("Type a string to find the longest non-decreasing sub:")
+print("longest non-decreasing sub: ", max([msg.strip()[i:j] for j in range(len(msg.strip())) for i in range(len(msg.strip())) if all([x <= y for x in msg.strip()[i:j] for y in (msg.strip()[i+1:j+1] if j+1 <= len(msg.strip()) else msg.strip()[i:j])])], key=len))
 """
 list of numbers: 1 2 3 4 5 6 7 8 9 10
  1. sum = 55
