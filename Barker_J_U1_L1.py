@@ -44,13 +44,13 @@ def display_path(n, explored):  # key: current, value: parent
     print()
     l = l[::-1]
     for i in l:
-        print(i[0:3], end="   ")
+        print(" ".join(i[0:3]), end="   ")
     print()
     for j in l:
-        print(j[3:6], end="   ")
+        print(" ".join(j[3:6]), end="   ")
     print()
     for k in l:
-        print(k[6:9], end="   ")
+        print(" ".join(k[6:9]), end="   ")
     print("\n\nThe shortest path length is :", len(l))
     return ""
 
@@ -97,12 +97,12 @@ def DFS(initial):
 def main():
 
     initial = getInitialState()
-    print(initial)
+    # print(initial)
     # print(generate_children(initial)) # Test generate children
-    print("BFS start with:\n", initial[0:3], "\n", initial[3:6], "\n", initial[6:], "\n")
+    print("BFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]), "\n")
     print(BFS(initial))
-    print("DFS start with:\n", initial[0:3], "\n", initial[3:6], "\n", initial[6:], "\n")
-    print(DFS("_42135678"))
+    print("DFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]), "\n")
+    #print(DFS("_42135678"))
 
 
 if __name__ == '__main__':
