@@ -59,22 +59,16 @@ def display_path(n, explored):  # key: current, value: parent
 def BFS(initial_state):
     explored = {initial_state:"s"}
     nodeQueue = [[initial_state]]
-    while(True):
-        if nodeQueue == []:
-            return display_path(s, explored)
+    while nodeQueue:
         path = nodeQueue.pop(0)
-        try:
-            explored[path[-1]] = s
-        except UnboundLocalError:
-            explored[path[-1]] = "s"
         s = path[-1]
-
-        if s == "_12345678": display_path(s, explored)
+        if s == "_12345678":
+            display_path(s, explored)
         for state in generate_children(list(s)):
-            if state not in nodeQueue and state not in list(explored):
-                path.append(state)
-                nodeQueue.append(path)
-        # display_path(nodeQueue, explored)
+            if state not in explored:
+                nodeQueue.append([state])
+                explored[state] = s
+                # display_path(nodeQueue, explored)
 
 
 
@@ -85,8 +79,17 @@ def BFS(initial_state):
 
 
 def DFS(initial):
-    '''Your code goes here'''
-    return ("No solution")
+    explored = {initial:"s"}
+    nodeQueue = [[initial]]
+    while nodeQueue:
+        path = nodeQueue.pop()
+        s = path[-1]
+        if s == "_12345678":
+            display_path(s, explored)
+        for state in generate_children(list(s)):
+            if state not in explored:
+                nodeQueue.append([state])
+                explored[state] = s
 
 
 def main():
@@ -97,7 +100,7 @@ def main():
     print("BFS start with:\n", initial[0:3], "\n", initial[3:6], "\n", initial[6:], "\n")
     print(BFS(initial))
     print("DFS start with:\n", initial[0:3], "\n", initial[3:6], "\n", initial[6:], "\n")
-    print(DFS(initial))
+    print(DFS("_42135678"))
 
 
 if __name__ == '__main__':
