@@ -52,7 +52,7 @@ def display_path(n, explored):  # key: current, value: parent
     for k in l:
         print(" ".join(k[6:9]), end="   ")
     print("\n\nThe shortest path length is :", len(l))
-    return ""
+
 
 
 '''Find the shortest path to the goal state "_12345678" and
@@ -60,7 +60,7 @@ def display_path(n, explored):  # key: current, value: parent
    You can make other helper methods, but you must use dictionary for explored.'''
 
 
-def BFS(initial_state):
+def BFS(initial_state):  # Note to whoever reads this: 8-puzzle DOES have unsolvable board states. google odd number of inversions for more info
     explored = {initial_state: "s"}
     nodeQueue = [[initial_state]]
     while nodeQueue:
@@ -88,8 +88,8 @@ def DFS(initial):
         s = path[-1]
         if s == "_12345678":
             display_path(s, explored)
-        for state in generate_children(list(s)):
-            if state not in explored:
+        for state in reversed(generate_children(list(s))):
+            if state not in explored and state not in nodeStack:
                 nodeStack.append([state])
                 explored[state] = s
 
@@ -97,12 +97,13 @@ def DFS(initial):
 def main():
 
     initial = getInitialState()
+    # initial = "_42135678"
     # print(initial)
     # print(generate_children(initial)) # Test generate children
     print("BFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]), "\n")
     print(BFS(initial))
     print("DFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]), "\n")
-    #print(DFS("_42135678"))
+    print(DFS(initial))
 
 
 if __name__ == '__main__':
