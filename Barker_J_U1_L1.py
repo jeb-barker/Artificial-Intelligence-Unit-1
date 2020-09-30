@@ -28,7 +28,9 @@ def swap(state, i, j):
 def generate_children(state):
     sIndex = state.index("_")  # store index of space (not necessary, just saves a little bit of space)
 
-    # return [swap(state, sIndex, j) for j, val in enumerate(list(state)) if not sIndex == j and (sIndex % 3 == j % 3 and abs(sIndex - j) <= 3) or ((sIndex - 1 == j and ((sIndex % 3) - 1 == j % 3)) or (sIndex + 1 == j and ((sIndex % 3) + 1 == j % 3)))]
+    # return [swap(state, sIndex, j) for j, val in enumerate(list(state)) if not sIndex == j and (sIndex % 3 == j % 3
+    # and abs(sIndex - j) <= 3) or ((sIndex - 1 == j and ((sIndex % 3) - 1 == j % 3)) or (sIndex + 1 == j and ((
+    # sIndex % 3) + 1 == j % 3)))]
 
     # This returns children in the order: UP, LEFT, RIGHT, DOWN.
     # THIS CODE IS MUCH FASTER THAN THE SAMPLE BELOW
@@ -42,21 +44,22 @@ def generate_children(state):
     # space at index 2, j at index 3: 2%3 + 1 != 3%3.
     children = []
     if (sIndex - 3) >= 0:
-        children.append(swap(state, sIndex, sIndex-3))
+        children.append(swap(state, sIndex, sIndex - 3))
     if (sIndex % 3) - 1 == (sIndex - 1) % 3:
-        children.append(swap(state, sIndex, sIndex-1))
+        children.append(swap(state, sIndex, sIndex - 1))
     if (sIndex + 3) < 9:
-        children.append(swap(state, sIndex, sIndex+3))
+        children.append(swap(state, sIndex, sIndex + 3))
     if (sIndex % 3) + 1 == (sIndex + 1) % 3:
-        children.append(swap(state, sIndex, sIndex+1))
+        children.append(swap(state, sIndex, sIndex + 1))
     return children
+
 
 def display_path(n, explored):  # key: current, value: parent
     l = []
     while explored[n] != "s":  # "s" is initial's parent
         l.append(n)
         n = explored[n]
-    print()
+    # print()
     l = l[::-1]
     for i in l:
         # print(" ".join(i[0:3]), end="   ")  # with spaces
@@ -70,7 +73,6 @@ def display_path(n, explored):  # key: current, value: parent
         # print(" ".join(k[6:9]), end="   ")  # with spaces
         print(k[6:9], end="   ")
     print("\n\nThe shortest path length is :", len(l))
-
 
 
 '''Find the shortest path to the goal state "_12345678" and
@@ -87,11 +89,13 @@ def BFS(initial_state):  # Note to whoever reads this: 8-puzzle DOES have unsolv
         s = path[-1]
         if s == "_12345678":
             display_path(s, explored)
+            return ""
         for state in generate_children(list(s)):
             if state not in explored:
                 nodeQueue.append([state])
                 explored[state] = s  # state is the child while s is the parent
                 # display_path(nodeQueue, explored)  # not correct: only display once the goal condition is met.
+    return "No Solution"
 
 
 '''Find the shortest path to the goal state "_12345678" and
@@ -107,23 +111,26 @@ def DFS(initial):
         s = path[-1]
         if s == "_12345678":
             display_path(s, explored)
+            return ""
         for state in generate_children(list(s)):  # add child to the stack/explored for every child generated.
             if state not in explored and state not in nodeStack:
                 nodeStack.append([state])
                 explored[state] = s  # state is current, s is parent.
+    return "No Solution"
 
 
 def main():
-
     initial = getInitialState()
     # initial = "_42135678"
     # print(initial)
     # print(generate_children(initial)) # Test generate children
 
-    # print("BFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]), "\n")  # prints with spaces
+    # print("BFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]),
+    # "\n")  # prints with spaces
     print("BFS start with:\n", initial[0:3], "\n", initial[3:6], "\n", initial[6:], "\n")
     print(BFS(initial))
-    # print("DFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]), "\n")  # with spaces
+    # print("DFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]),
+    # "\n")  # with spaces
     print("DFS start with:\n", initial[0:3], "\n", initial[3:6], "\n", initial[6:], "\n")
     print(DFS(initial))
 
