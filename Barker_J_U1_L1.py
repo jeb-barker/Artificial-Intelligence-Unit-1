@@ -28,6 +28,7 @@ def swap(state, i, j):
 def generate_children(state):
     sIndex = state.index("_")  # store index of space (not necessary, just saves a little bit of space)
 
+<<<<<<< Updated upstream
     # return [swap(state, sIndex, j) for j, val in enumerate(list(state)) if not sIndex == j and (sIndex % 3 == j % 3 and abs(sIndex - j) <= 3) or ((sIndex - 1 == j and ((sIndex % 3) - 1 == j % 3)) or (sIndex + 1 == j and ((sIndex % 3) + 1 == j % 3)))]
 
     # This returns children in the order: UP, LEFT, RIGHT, DOWN.
@@ -35,6 +36,12 @@ def generate_children(state):
     # The sample output returns the order: UP, LEFT, DOWN, RIGHT.
     # See code below for a match of sample output.
 
+=======
+    return [swap(state, sIndex, j) for j, val in enumerate(list(state)) if
+            not sIndex == j and (sIndex % 3 == j % 3 and abs(sIndex - j) <= 3) or (
+                        (sIndex - 1 == j and ((sIndex % 3) - 1 == j % 3)) or (
+                            sIndex + 1 == j and ((sIndex % 3) + 1 == j % 3)))]
+>>>>>>> Stashed changes
     # Return state after swapping space/j for every index in the given state. The following conditions are in order
     # in the line above. Make sure the space and the index you are checking isn't the same Check if the space and the
     # index you are checking are in the same column (Mod 3 produces this), only if the space and j are less than 4
@@ -56,9 +63,10 @@ def display_path(n, explored):  # key: current, value: parent
     while explored[n] != "s":  # "s" is initial's parent
         l.append(n)
         n = explored[n]
-    print()
+    # print()
     l = l[::-1]
     for i in l:
+<<<<<<< Updated upstream
         # print(" ".join(i[0:3]), end="   ")  # with spaces
         print(i[0:3], end="   ")
     print()
@@ -68,9 +76,17 @@ def display_path(n, explored):  # key: current, value: parent
     print()
     for k in l:
         # print(" ".join(k[6:9]), end="   ")  # with spaces
+=======
+        print(i[0:3], end="   ")
+    print()
+    for j in l:
+        print(j[3:6], end="   ")
+    print()
+    for k in l:
+>>>>>>> Stashed changes
         print(k[6:9], end="   ")
     print("\n\nThe shortest path length is :", len(l))
-
+    # return ""
 
 
 '''Find the shortest path to the goal state "_12345678" and
@@ -78,8 +94,13 @@ def display_path(n, explored):  # key: current, value: parent
    You can make other helper methods, but you must use dictionary for explored.'''
 
 
+<<<<<<< Updated upstream
 def BFS(initial_state):  # Note to whoever reads this: 8-puzzle DOES have unsolvable board states.
     # google odd number of inversions for more info
+=======
+def BFS(initial_state):  # Note to whoever reads this: 8-puzzle DOES have unsolvable board states. google odd number
+    # of inversions for more info
+>>>>>>> Stashed changes
     explored = {initial_state: "s"}
     nodeQueue = [[initial_state]]
     while nodeQueue:
@@ -87,11 +108,17 @@ def BFS(initial_state):  # Note to whoever reads this: 8-puzzle DOES have unsolv
         s = path[-1]
         if s == "_12345678":
             display_path(s, explored)
+            return ""
         for state in generate_children(list(s)):
             if state not in explored:
                 nodeQueue.append([state])
                 explored[state] = s  # state is the child while s is the parent
+<<<<<<< Updated upstream
                 # display_path(nodeQueue, explored)  # not correct: only display once the goal condition is met.
+=======
+                # display_path(nodeQueue, explored)
+    return "No Solution"
+>>>>>>> Stashed changes
 
 
 '''Find the shortest path to the goal state "_12345678" and
@@ -107,23 +134,36 @@ def DFS(initial):
         s = path[-1]
         if s == "_12345678":
             display_path(s, explored)
+<<<<<<< Updated upstream
         for state in generate_children(list(s)):  # add child to the stack/explored for every child generated.
             if state not in explored and state not in nodeStack:
                 nodeStack.append([state])
                 explored[state] = s  # state is current, s is parent.
+=======
+            return ""
+        for state in reversed(generate_children(list(s))):
+            if state not in explored and state not in nodeStack:
+                nodeStack.append([state])
+                explored[state] = s
+    return "No Solution"
+>>>>>>> Stashed changes
 
 
 def main():
-
-    initial = getInitialState()
-    # initial = "_42135678"
+    # initial = getInitialState()
+    initial = "_42135678"
     # print(initial)
     # print(generate_children(initial)) # Test generate children
+<<<<<<< Updated upstream
 
     # print("BFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]), "\n")  # prints with spaces
     print("BFS start with:\n", initial[0:3], "\n", initial[3:6], "\n", initial[6:], "\n")
     print(BFS(initial))
     # print("DFS start with:\n", " ".join(initial[0:3]), "\n", " ".join(initial[3:6]), "\n", " ".join(initial[6:]), "\n")  # with spaces
+=======
+    print("BFS start with:\n", initial[0:3], "\n", initial[3:6], "\n", initial[6:], "\n")
+    print(BFS(initial))
+>>>>>>> Stashed changes
     print("DFS start with:\n", initial[0:3], "\n", initial[3:6], "\n", initial[6:], "\n")
     print(DFS(initial))
 
