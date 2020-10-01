@@ -3,9 +3,11 @@
 
 # Each Vertex object will have attributes to store its own name and its list of its neighboring vertices.
 class Vertex:
-    def __init__(self, value, edge_list=[]):
+    def __init__(self, value, edge_list):
         self.value = value
         self.edge_list = edge_list
+    def getEdge_list(self):
+        return self.edge_list
     # def __str__(self):
     # return self.value + " " + str(self.edge_list)
 
@@ -32,14 +34,24 @@ def build_graph_deprecated(filename):
 
 def build_graph(filename):
     try:
-        file = open(filename)
         graph = []
-        for x, line in enumerate(file.readlines()):
-            if not any([line.split()[0] == v.value for v in graph]):
-                graph.append(Vertex(line.split()[0], [Vertex(line.split()[1])]))
-            else:
-                vert = [line.split()[0] == v.value for v in graph]
-                graph[vert.index(True)].edge_list.append(Vertex(line.split()[1]))
+        file_ = open(filename)
+        for x, line in enumerate(file_.readlines()):
+            vert = [line.split()[0] == v.value for v in graph]
+            if not any(vert):
+                graph.append(Vertex(line.split()[0], []))
+
+        file = open(filename)
+        for line in file.readlines():
+            vert = [line.split()[0] == v.value for v in graph]
+            newVert = [line.split()[1] == v.value for v in graph]
+            print(vert.index(True))
+            print(newVert.index(True))
+            vertex = graph[vert.index(True)]
+            edgeL = vertex.edge_list
+            newVertex = graph[newVert.index(True)]
+            edgeL.append(newVertex)
+            display_graph(graph)
         return graph
 
 
