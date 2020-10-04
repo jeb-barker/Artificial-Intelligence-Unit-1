@@ -47,15 +47,19 @@ class HeapPriorityQueue():
 
     def heapDown(self, k, size):
         left, right = 2 * k, 2 * k + 1
-        minChild = 2 * k if 2 * k < size and self.queue[left] < self.queue[right] else 2 * k + 1 if 2 * k + 1 < size and self.queue[left] >= self.queue[right] else -1
-        if minChild != -1 and self.queue[k] < self.queue[minChild]:
+        if 2 * k < size and 2 * k + 1 < size and self.queue[left] < self.queue[right]:
+            minChild = 2 * k
+        else:
+            minChild = 2 * k + 1 if 2 * k + 1 < size and self.queue[left] >= self.queue[right] else -1
+        if minChild != -1 and self.queue[k] > self.queue[minChild]:
             self.swap(k, minChild)
             self.heapDown(minChild, size)
 
     # make the queue as a min-heap
     def reheap(self):
-        for x in range((len(self.queue)-1)//2, 0, -1):
-            self.heapDown(x, len(self.queue)-1)
+        for x in range(len(self.queue)//2, 0, -1):
+            self.heapDown(x, len(self.queue))
+        self.heapUp(len(self.queue)-1)
 
 
     # remove the min value (root of the heap)
@@ -63,14 +67,14 @@ class HeapPriorityQueue():
     def pop(self):
         self.swap(1, -1)
         out = self.queue.pop(-1)
-        self.heapDown(1, len(self.queue) - 1)
+        self.reheap()
         return out
 
     # remove a value at the given index (assume index 0 is the root)
     # return the removed value
     def remove(self, index):
-        out = self.queue.pop(index)
-        self.heapUp(index)
+        out = self.queue.pop(index+1)
+        self.reheap()
         return out
 
 
