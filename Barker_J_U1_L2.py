@@ -6,41 +6,54 @@ import random
 
 # print all items in one line with a tab or 3 to 4 spaces.
 def display(array):
-    [print(str(item) + "\t") for item in array]
+    s = ""
+    for x, item in enumerate(array):
+        s = s + str(item) + "   " if x != 0 else s
+    print(s)
 
 
 # sort the array by using heapsort algorithm.
 # use swap and heapDown
 def sort(array):
-    pass
+    for x in range(len(array)-1, 0, -1):
+        swap(array, x, 1)
+        heapDown(array, 1, x)
 
 
 # swap two items at position a and b in array
 # array is a list, a and b are integers
 def swap(array, a, b):
-    pass
+    array[a], array[b] = array[b], array[a]
 
 
 # heap down from k to size
 def heapDown(array, k, size):
     left, right = 2 * k, 2 * k + 1
-    pass
-
+    maxChild = 2*k if 2*k < size and array[left] > array[right] else 2*k+1 if 2*k+1 < size and array[left] <= array[right] else -1
+    if maxChild != -1 and array[k] < array[maxChild]:
+        swap(array, k, maxChild)
+        heapDown(array, maxChild, size)
 
 # check all items in array.
 # Returns True if all items are in ascending order.
 def isSorted(array):
-    return True if sorted(array) == array else False
+    dummy = array.pop(0)
+    ret = True if sorted(array) == array else False
+    array.insert(0, dummy)
+    return ret
+
 
 
 # use round(random.unifrom(from, to), 2) to assign new values in each cell
 def createRandom(array):
-    return [round(random.unifrom(), 2)]
+    for x, val in enumerate(array):
+        array[x] = round(random.uniform(1.0, 100.0), 2)
 
 
 # Make the given array as a max heap. Use heapDown.
 def makeHeap(array, size):
-    pass
+    for x in range(size//2, 0, -1):
+        heapDown(array, x, size)
 
 
 def main():
