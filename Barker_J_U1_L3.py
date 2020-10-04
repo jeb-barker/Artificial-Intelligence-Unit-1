@@ -62,13 +62,16 @@ class HeapPriorityQueue():
     # return the removed value
     def pop(self):
         self.swap(1, -1)
-        self.heapDown(1, len(self.queue))
+        out = self.queue.pop(-1)
+        self.heapDown(1, len(self.queue) - 1)
+        return out
 
     # remove a value at the given index (assume index 0 is the root)
     # return the removed value
     def remove(self, index):
-        # Your code goes here
-        return self.queue[0]  # change this
+        out = self.queue.pop(index)
+        self.heapUp(index)
+        return out
 
 
 # This method is for testing. Do not change it.
