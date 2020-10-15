@@ -63,7 +63,7 @@ class HeapPriorityQueue():
     def pop(self):
         self.swap(1, -1)
         out = self.queue.pop(-1)
-        self.reheap()
+        self.heapDown(1, len(self.queue))
         return out
 
     # remove a value at the given index (assume index 0 is the root)
@@ -175,7 +175,7 @@ def a_star(start, goal="_123456789ABCDEF", heuristic=dist_heuristic, size=4):
     pc = 1
 
     if start == goal: return []
-    frontier.push((heuristic(start, goal), start))
+    frontier.push((heuristic(start, goal) + 1, start, [start]))
     while frontier:
         cc = frontier.pop()
         # equivalents = []
@@ -190,30 +190,28 @@ def a_star(start, goal="_123456789ABCDEF", heuristic=dist_heuristic, size=4):
         #             frontier.push(t)
         #             b = False
 
-
-
         current = cc[1]
 
         # print("",len(equivalents))
-        #for current in equivalents:
+        # for current in equivalents:
         if current == goal:
-            out = []
-            while current != "s":  # "s" is initial's parent
-                out.append(current)
-                current = explored[current][1]
-            return list(reversed(out))
+
+            return cc[2]
 
         for child in generate_children(current, size):
-            if not child in explored:
-                explored[child] = (heuristic(child, goal) + pc, current)
-                frontier.push((heuristic(child, goal), child))
+            from copy import deepcopy
+            pp = deepcopy(cc[2])
+            pp.append(child)
+            if child not in explored:
+                explored[child] = (heuristic(child, goal) + len(pp), current)
+                frontier.push((heuristic(child, goal) + len(pp), child, pp))
                 # frontier.push((pc, child))
 
             if child in explored:
-                if explored[child][0] > heuristic(child, goal) + pc:
-                    explored[child][0] = heuristic(child, goal) + pc
-                    explored[child][1] = current
-                    print("less")
+                if explored[child][0] > heuristic(child, goal) + len(pp):
+                    explored[child] = (heuristic(child, goal) + len(pp), current)
+                    frontier.push((heuristic(child, goal) + len(pp), child, pp))
+
 
         pc += 1
         # print("level: ", pc)
