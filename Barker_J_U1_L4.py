@@ -195,22 +195,24 @@ def a_star(start, goal="_123456789ABCDEF", heuristic=dist_heuristic, size=4):
         # print("",len(equivalents))
         # for current in equivalents:
         if current == goal:
-
             return cc[2]
 
         for child in generate_children(current, size):
-            from copy import deepcopy
-            pp = deepcopy(cc[2])
+            # from copy import deepcopy
+            # pp = deepcopy(cc[2])
+            pp=[]
+            pp.extend(cc[2])
             pp.append(child)
+            f = heuristic(child, goal) + len(pp)
             if child not in explored:
-                explored[child] = (heuristic(child, goal) + len(pp), current)
-                frontier.push((heuristic(child, goal) + len(pp), child, pp))
+                explored[child] = (f, current)
+                frontier.push((f, child, pp))
                 # frontier.push((pc, child))
 
             if child in explored:
-                if explored[child][0] > heuristic(child, goal) + len(pp):
-                    explored[child] = (heuristic(child, goal) + len(pp), current)
-                    frontier.push((heuristic(child, goal) + len(pp), child, pp))
+                if explored[child][0] > f:
+                    explored[child] = (f, current)
+                    frontier.push((f, child, pp))
 
 
         pc += 1
