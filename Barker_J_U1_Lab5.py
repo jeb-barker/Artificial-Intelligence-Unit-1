@@ -47,7 +47,7 @@ def bi_bfs(start, goal, words_set):
                 frontier.append(adj)
                 exploredf[adj] = pathf[:]
             if adj in exploredf:
-                if len(exploredf[adj]) > len(pathf):
+                if len(exploredf[adj]) > len(pathf)+1:
                     pathf.extend([adj])
                     frontier.append(adj)
                     exploredf[adj] = pathf[:]
@@ -62,7 +62,7 @@ def bi_bfs(start, goal, words_set):
                 backtier.append(adj)
                 exploredb[adj] = pathb[:]
             if adj in exploredb:
-                if len(exploredb[adj]) > len(pathb):
+                if len(exploredb[adj]) > len(pathb)+1:
                     pathb.extend([adj])
                     backtier.append(adj)
                     exploredb[adj] = pathb[:]
