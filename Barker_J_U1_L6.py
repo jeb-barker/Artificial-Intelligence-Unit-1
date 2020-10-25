@@ -358,7 +358,7 @@ def bi_a_star(start, goal, graph, col, heuristic=dist_heuristic):
         # print(1-k)
         ttable = [a[1] == current for a in frontier[1-k].queue]
 
-        if one_more and any(ttable):
+        if any(ttable):
         # if current == frontier[1-k].queue[1][1]:
             fp = cc[2]
             print(ttable)
@@ -367,16 +367,12 @@ def bi_a_star(start, goal, graph, col, heuristic=dist_heuristic):
                 bp = frontier[1-k].pop()
             bp = bp[2]
             if k == 0:
-                fp.extend(bp[::-1])
+                fp.extend(bp[:-1][::-1])
             else:
-                fp.extend(bp[::-1])
+                fp.extend(bp[:-1][::-1])
                 fp = fp[::-1]
             draw_final_path(ROOT, canvas, fp, graph)
             return fp, sum([calc_edge_cost(*graph[0][fp[x]], *graph[0][fp[x + 1]]) for x in range(len(fp) - 1)])
-
-
-        if any(ttable):
-            one_more = True
 
         for child in graph[3][current]:
             # from copy import deepcopy
@@ -384,7 +380,7 @@ def bi_a_star(start, goal, graph, col, heuristic=dist_heuristic):
             pp = []
             pp.extend(cc[2])
             pp.append(child)
-            f = heuristic(child, goal if k == 0 else start, graph) + sum([float(graph[4][(pp[x], pp[x + 1])]) for x in range(len(pp) - 1)])
+            f = heuristic(child, (goal if k == 0 else start), graph) + sum([calc_edge_cost(*graph[0][pp[x]], *graph[0][pp[x+1]]) for x in range(len(pp)-1)])
             if child not in explored[k]:
                 explored[k][child] = (f, current)
                 frontier[k].push((f, child, pp))
@@ -451,8 +447,15 @@ def main():
 
     cur_time = time.time()
     path, cost = bi_a_star(graph[2][start], graph[2][goal], graph, 'orange')
+    print(dist_heuristic('0100367', graph[2][goal], graph),"LR")
+    print(dist_heuristic('0100367', graph[2][start], graph),"RL")
+    print(dist_heuristic('0100239', graph[2][goal], graph),"LR")
+    print(dist_heuristic('0100239', graph[2][start], graph),"RL")
+
     if path != None: display_path(path, graph)
     else: print ("No Path Found.")
+    print(path)
+    print('Length of whole path: ', len(path))
     print ('Bi-A star Path Cost:', cost)
     print ("Bi-A star duration: ", (time.time() - cur_time))
     print ()
