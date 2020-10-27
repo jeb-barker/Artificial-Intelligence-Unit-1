@@ -168,6 +168,7 @@ def display_path(path, graph):
     for entry in path:
         if str(entry) in graph[1]:
             out.append(graph[1][str(entry)])
+
     print(out)
 
 
@@ -224,7 +225,7 @@ def bfs(start, goal, graph, col):
             path, cost = generate_path(s, explored, graph)
             draw_final_path(ROOT, canvas, path, graph)
 
-            return path, cost
+            return path, cost, counter
 
         for a in graph[3][s]:  # graph[3] is neighbors
             if a not in explored:
@@ -233,7 +234,7 @@ def bfs(start, goal, graph, col):
 
                 drawLine(canvas, *graph[5][s], *graph[5][a], col)
         counter += 1
-        if counter % 10000 == 0: ROOT.update()
+        if counter % 1000 == 0: ROOT.update()
     return None
 
 
@@ -268,7 +269,7 @@ def bi_bfs(start, goal, graph, col):
                 cost = sum([calc_edge_cost(*graph[0][path[x]], *graph[0][path[x+1]]) for x in range(len(path)-1)])
                 draw_final_path(ROOT, canvas, path, graph)
 
-                return path, cost
+                return path, cost, counter
 
             for a in graph[3][s]:  # neighbors
                 if a not in explored[k]:
@@ -277,7 +278,7 @@ def bi_bfs(start, goal, graph, col):
 
                     drawLine(canvas, *graph[5][s], *graph[5][a], col)
             counter += 1
-            if counter % 10000 == 0: ROOT.update()
+            if counter % 1000 == 0: ROOT.update()
     return "No Solution :("
 
 
@@ -304,7 +305,7 @@ def a_star(start, goal, graph, col, heuristic=dist_heuristic):
         # for current in equivalents:
         if current == goal:
             draw_final_path(ROOT, canvas, cc[2], graph)
-            return cc[2], sum([calc_edge_cost(*graph[0][cc[2][x]], *graph[0][cc[2][x+1]]) for x in range(len(cc[2])-1)])
+            return cc[2], sum([calc_edge_cost(*graph[0][cc[2][x]], *graph[0][cc[2][x+1]]) for x in range(len(cc[2])-1)]), counter
 
         for child in graph[3][current]:
             # from copy import deepcopy
@@ -372,7 +373,7 @@ def bi_a_star(start, goal, graph, col, heuristic=dist_heuristic):
                 fp.extend(bp[:-1][::-1])
                 fp = fp[::-1]
             draw_final_path(ROOT, canvas, fp, graph)
-            return fp, sum([calc_edge_cost(*graph[0][fp[x]], *graph[0][fp[x + 1]]) for x in range(len(fp) - 1)])
+            return fp, sum([calc_edge_cost(*graph[0][fp[x]], *graph[0][fp[x + 1]]) for x in range(len(fp) - 1)]), counter
 
         for child in graph[3][current]:
             # from copy import deepcopy
@@ -381,17 +382,19 @@ def bi_a_star(start, goal, graph, col, heuristic=dist_heuristic):
             pp.extend(cc[2])
             pp.append(child)
             f = heuristic(child, (goal if k == 0 else start), graph) + sum([calc_edge_cost(*graph[0][pp[x]], *graph[0][pp[x+1]]) for x in range(len(pp)-1)])
+
+            if child in explored[k]:
+                if explored[k][child][0] > f:
+                    explored[k][child] = (f, current)
+                    drawLine(canvas, *graph[5][child], *graph[5][current], col)
+                    frontier[k].push((f, child, pp))
+
             if child not in explored[k]:
                 explored[k][child] = (f, current)
                 frontier[k].push((f, child, pp))
                 drawLine(canvas, *graph[5][child], *graph[5][current], col)
                 # frontier.push((pc, child))
 
-            elif child in explored[k]:
-                if explored[k][child][0] > f:
-                    explored[k][child] = (f, current)
-                    drawLine(canvas, *graph[5][child], *graph[5][current], col)
-                    frontier[k].push((f, child, pp))
         counter += 1
         if counter % 1000 == 0: ROOT.update()
 
@@ -411,11 +414,12 @@ def main():
 
     cur_time = time.time()
 
-    path, cost = bfs(graph[2][start], graph[2][goal], graph, 'yellow')  # graph[2] is city to node
+    path, cost, c = bfs(graph[2][start], graph[2][goal], graph, 'yellow')  # graph[2] is city to node
     if path is not None:
+        print("The number of explored nodes of {}: ".format("BFS"), c)
+        print("The whole path: ", path)
+        print("The length of the whole path", len(path))
         display_path(path, graph)
-        print(path)
-        print('Length of whole path: ', len(path))
     else:
         print("No Path Found.")
     print('BFS Path Cost:', cost)
@@ -423,37 +427,46 @@ def main():
     print()
 
     cur_time = time.time()
-    path, cost = bi_bfs(graph[2][start], graph[2][goal], graph, 'green')
+    path, cost, c = bi_bfs(graph[2][start], graph[2][goal], graph, 'green')
     if path is not None:
+        print("The number of explored nodes of {}: ".format("Bi-BFS"), c)
+        print("The whole path: ", path)
+        print("The length of the whole path", len(path))
         display_path(path, graph)
-        print(path)
     else:
         print("No Path Found.")
-    print('Length of whole path: ', len(path))
     print('Bi-BFS Path Cost:', cost)
-
     print('Bi-BFS duration:', (time.time() - cur_time))
     print()
 
     cur_time = time.time()
-    path, cost = a_star(graph[2][start], graph[2][goal], graph, 'blue')
-    if path != None: display_path(path, graph)
-    else: print ("No Path Found.")
-    print(path)
-    print('Length of whole path: ', len(path))
+    path, cost, c = a_star(graph[2][start], graph[2][goal], graph, 'blue')
+    if path is not None:
+        print("The number of explored nodes of {}: ".format("A*"), c)
+        print("The whole path: ", path)
+        print("The length of the whole path", len(path))
+        display_path(path, graph)
+    else:
+        print ("No Path Found.")
     print ('A star Path Cost:', cost)
     print ('A star duration:', (time.time() - cur_time))
     print ()
 
     cur_time = time.time()
-    path, cost = bi_a_star(graph[2][start], graph[2][goal], graph, 'orange')
-    print(dist_heuristic('0100367', graph[2][goal], graph),"LR")
-    print(dist_heuristic('0100367', graph[2][start], graph),"RL")
-    print(dist_heuristic('0100239', graph[2][goal], graph),"LR")
-    print(dist_heuristic('0100239', graph[2][start], graph),"RL")
+    path, cost, c = bi_a_star(graph[2][start], graph[2][goal], graph, 'orange')
+    # print(dist_heuristic('0100367', graph[2][goal], graph),"LR")
+    # print(dist_heuristic('0100367', graph[2][start], graph),"RL")
+    # print(dist_heuristic('0100239', graph[2][goal], graph),"LR")
+    # print(dist_heuristic('0100239', graph[2][start], graph),"RL")
 
-    if path != None: display_path(path, graph)
-    else: print ("No Path Found.")
+    if path is not None:
+        print("The number of explored nodes of {}: ".format("Bi-A*"), c)
+        print("The whole path: ", path)
+        print("The length of the whole path", len(path))
+        display_path(path, graph)
+        display_path(path, graph)
+    else:
+        print ("No Path Found.")
     print(path)
     print('Length of whole path: ', len(path))
     print ('Bi-A star Path Cost:', cost)
