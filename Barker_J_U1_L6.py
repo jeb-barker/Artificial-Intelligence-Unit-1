@@ -1,4 +1,4 @@
-# Name:        Data:
+# Name: Jeb Barker       Data: 10/29/20
 import random, pickle, math, time
 from math import pi, acos, sin, cos
 from tkinter import *
@@ -329,14 +329,16 @@ def a_star(start, goal, graph, col, heuristic=dist_heuristic):
         if counter % 1 == 0: ROOT.update()
 
 
-def bi_a_star(start, goal, graph, col, canvas=None, heuristic=dist_heuristic, ROOT=Tk()):
+def bi_a_star(start, goal, graph, col, ROOT, canvas=None, heuristic=dist_heuristic):
 
     # ROOT = Tk()  # creates new tkinter
-
+    one_more = False
     if not canvas:
+        ROOT = Tk()
         ROOT.title("Bi-A*")
         canvas = Canvas(ROOT, background='black')  # sets background
         draw_all_edges(ROOT, canvas, graph)
+        one_more = True
 
     counter = 0
     explored = [{start: (float(0), "s")}, {goal: (float(0), "s")}]
@@ -346,9 +348,9 @@ def bi_a_star(start, goal, graph, col, canvas=None, heuristic=dist_heuristic, RO
     # backtier = [goal]
     # exploredb = {goal: [goal]}
     k = 1
-    one_more = False
 
-    while len(frontier[1].queue) > 1 and len(frontier[0].queue) > 1:  # based off of Mrs. Kim's updated Bi-BFS code. Still a bit different tho
+
+    while len(frontier[1].queue) > 1 and len(frontier[0].queue) > 1:  # based off of Mrs. Kim's updated Bi-BFS pseudo-code. Still a bit different tho
         k = 1 - k  # sets k to be 0 then 1 then 0...
         # tempFrontier = HeapPriorityQueue()
         # tempFrontier.queue = frontier[k].queue[:]
@@ -373,7 +375,8 @@ def bi_a_star(start, goal, graph, col, canvas=None, heuristic=dist_heuristic, RO
             else:
                 fp.extend(bp[:-1][::-1])
                 fp = fp[::-1]
-            draw_final_path(ROOT, canvas, fp, graph)
+            if one_more:
+                draw_final_path(ROOT, canvas, fp, graph)
             return fp, sum([calc_edge_cost(*graph[0][fp[x]], *graph[0][fp[x + 1]]) for x in range(len(fp) - 1)]), counter
 
         for child in graph[3][current]:
@@ -397,7 +400,7 @@ def bi_a_star(start, goal, graph, col, canvas=None, heuristic=dist_heuristic, RO
                 # frontier.push((pc, child))
 
         counter += 1
-        if counter % 1 == 0: ROOT.update()
+        if counter % 1 == 1000: ROOT.update()
 
     return "No Solution :("
 
@@ -409,26 +412,33 @@ def tri_directional(city1, city2, city3, graph, col, heuristic=dist_heuristic):
     canvas = Canvas(ROOT, background='black')  # sets background
     draw_all_edges(ROOT, canvas, graph)
 
-    path12, cost12, c12 = bi_a_star(city1, city2, graph, col, canvas)
+    path12, cost12, c12 = bi_a_star(city1, city2, graph, col, ROOT, canvas)
     print("The number of explored nodes of {}: ".format("Bi-A*"), c12)
     print("The whole path: ", path12)
     print("The length of the partial path", len(path12))
 
-    path13, cost13, c13 = bi_a_star(city1, city3, graph, col, canvas)
+    path13, cost13, c13 = bi_a_star(city1, city3, graph, col, ROOT, canvas)
     print("The number of explored nodes of {}: ".format("Bi-A*"), c13)
     print("The whole path: ", path13)
     print("The length of the partial path", len(path13))
 
-    path23, cost23, c23 = bi_a_star(city2, city3, graph, col, canvas)
+    path23, cost23, c23 = bi_a_star(city2, city3, graph, col, ROOT, canvas)
     print("The number of explored nodes of {}: ".format("Bi-A*"), c23)
     print("The whole path: ", path23)
     print("The length of the partial path", len(path23))
 
     path = [(path12, cost12), (path13, cost13), (path23, cost23)]
-    sorted_out_path = sorted(path, key=lambda paths: len(path[0]))
+    sorted_out_path = sorted(path, key=lambda paths: len(paths[0]))
+    k = 1
+    while sorted_out_path[0][0][-1] != sorted_out_path[1][0][0]:
+        k = 1-k
+        sorted_out_path[k] = (sorted_out_path[k][0][::-1], sorted_out_path[k][1])
+
     out_path = sorted_out_path[0][0][:-1]
     out_path.extend(sorted_out_path[1][0])
-    return out_path, out_path[0][1] + out_path[1][1], c12+c13+c23
+    pathCost = sum([calc_edge_cost(*graph[0][out_path[x]], *graph[0][out_path[x + 1]]) for x in range(len(out_path) - 1)])
+    draw_final_path(ROOT, canvas, out_path, graph)
+    return out_path, pathCost, c12+c13+c23
 
 
 def main():
@@ -477,7 +487,7 @@ def main():
     print ()
     
     cur_time = time.time()
-    path, cost, c = bi_a_star(graph[2][start], graph[2][goal], graph, 'orange')
+    path, cost, c = bi_a_star(graph[2][start], graph[2][goal], graph, 'orange', None)
     # print(dist_heuristic('0100367', graph[2][goal], graph),"LR")
     # print(dist_heuristic('0100367', graph[2][start], graph),"RL")
     # print(dist_heuristic('0100239', graph[2][goal], graph),"LR")
@@ -496,7 +506,7 @@ def main():
     """
     print("Tri-Search of ({}, {}, {})".format(start, goal, third))
     cur_time = time.time()
-    path, cost, c = tri_directional(graph[2][start], graph[2][goal], graph[2][third], graph, 'pink')
+    path, cost, c = tri_directional(graph[2][start], graph[2][goal], graph[2][third], graph, 'blue')
     if path is not None:
         print("The number of explored nodes of {}: ".format("Tri-A*"), c)
         print("The whole path: ", path)
