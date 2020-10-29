@@ -234,7 +234,7 @@ def bfs(start, goal, graph, col):
 
                 drawLine(canvas, *graph[5][s], *graph[5][a], col)
         counter += 1
-        if counter % 1000 == 0: ROOT.update()
+        if counter % 1 == 0: ROOT.update()
     return None
 
 
@@ -278,7 +278,7 @@ def bi_bfs(start, goal, graph, col):
 
                     drawLine(canvas, *graph[5][s], *graph[5][a], col)
             counter += 1
-            if counter % 1000 == 0: ROOT.update()
+            if counter % 1 == 0: ROOT.update()
     return "No Solution :("
 
 
@@ -326,15 +326,17 @@ def a_star(start, goal, graph, col, heuristic=dist_heuristic):
                     drawLine(canvas, *graph[5][child], *graph[5][current], col)
                     frontier.push((f, child, pp))
         counter += 1
-        if counter % 1000 == 0: ROOT.update()
+        if counter % 1 == 0: ROOT.update()
 
 
-def bi_a_star(start, goal, graph, col, heuristic=dist_heuristic):
+def bi_a_star(start, goal, graph, col, canvas=None, heuristic=dist_heuristic, ROOT=Tk()):
 
-    ROOT = Tk()  # creates new tkinter
-    ROOT.title("Bi-A*")
-    canvas = Canvas(ROOT, background='black')  # sets background
-    draw_all_edges(ROOT, canvas, graph)
+    # ROOT = Tk()  # creates new tkinter
+
+    if not canvas:
+        ROOT.title("Bi-A*")
+        canvas = Canvas(ROOT, background='black')  # sets background
+        draw_all_edges(ROOT, canvas, graph)
 
     counter = 0
     explored = [{start: (float(0), "s")}, {goal: (float(0), "s")}]
@@ -362,7 +364,6 @@ def bi_a_star(start, goal, graph, col, heuristic=dist_heuristic):
         if any(ttable):
         # if current == frontier[1-k].queue[1][1]:
             fp = cc[2]
-            print(ttable)
             bp = (None, None, None)
             while bp[1] != current:
                 bp = frontier[1-k].pop()
@@ -396,22 +397,45 @@ def bi_a_star(start, goal, graph, col, heuristic=dist_heuristic):
                 # frontier.push((pc, child))
 
         counter += 1
-        if counter % 1000 == 0: ROOT.update()
+        if counter % 1 == 0: ROOT.update()
 
     return "No Solution :("
 
 
 def tri_directional(city1, city2, city3, graph, col, heuristic=dist_heuristic):
     # Your code goes here
+    ROOT = Tk()
+    ROOT.title("Tri-A*")
+    canvas = Canvas(ROOT, background='black')  # sets background
+    draw_all_edges(ROOT, canvas, graph)
 
-    return None
+    path12, cost12, c12 = bi_a_star(city1, city2, graph, col, canvas)
+    print("The number of explored nodes of {}: ".format("Bi-A*"), c12)
+    print("The whole path: ", path12)
+    print("The length of the partial path", len(path12))
+
+    path13, cost13, c13 = bi_a_star(city1, city3, graph, col, canvas)
+    print("The number of explored nodes of {}: ".format("Bi-A*"), c13)
+    print("The whole path: ", path13)
+    print("The length of the partial path", len(path13))
+
+    path23, cost23, c23 = bi_a_star(city2, city3, graph, col, canvas)
+    print("The number of explored nodes of {}: ".format("Bi-A*"), c23)
+    print("The whole path: ", path23)
+    print("The length of the partial path", len(path23))
+
+    path = [(path12, cost12), (path13, cost13), (path23, cost23)]
+    sorted_out_path = sorted(path, key=lambda paths: len(path[0]))
+    out_path = sorted_out_path[0][0][:-1]
+    out_path.extend(sorted_out_path[1][0])
+    return out_path, out_path[0][1] + out_path[1][1], c12+c13+c23
 
 
 def main():
     start, goal = input("Start city: "), input("Goal city: ")
-    # third = input("Third city for tri-directional: ")
+    third = input("Third city for tri-directional: ")
     graph = make_graph("rrNodes.txt", "rrNodeCity.txt", "rrEdges.txt")  # Task 1
-
+    """
     cur_time = time.time()
 
     path, cost, c = bfs(graph[2][start], graph[2][goal], graph, 'yellow')  # graph[2] is city to node
@@ -451,7 +475,7 @@ def main():
     print ('A star Path Cost:', cost)
     print ('A star duration:', (time.time() - cur_time))
     print ()
-
+    
     cur_time = time.time()
     path, cost, c = bi_a_star(graph[2][start], graph[2][goal], graph, 'orange')
     # print(dist_heuristic('0100367', graph[2][goal], graph),"LR")
@@ -464,23 +488,25 @@ def main():
         print("The whole path: ", path)
         print("The length of the whole path", len(path))
         display_path(path, graph)
-        display_path(path, graph)
     else:
         print ("No Path Found.")
-    print(path)
-    print('Length of whole path: ', len(path))
     print ('Bi-A star Path Cost:', cost)
     print ("Bi-A star duration: ", (time.time() - cur_time))
     print ()
     """
-    print ("Tri-Search of ({}, {}, {})".format(start, goal, third))
+    print("Tri-Search of ({}, {}, {})".format(start, goal, third))
     cur_time = time.time()
-    path, cost = tri_directional(graph[2][start], graph[2][goal], graph[2][third], graph, 'pink', ROOT, canvas)
-    if path != None: display_path(path, graph)
-    else: print ("No Path Found.")
-    print ('Tri-A star Path Cost:', cost)
-    print ("Tri-directional search duration:", (time.time() - cur_time))
-    """
+    path, cost, c = tri_directional(graph[2][start], graph[2][goal], graph[2][third], graph, 'pink')
+    if path is not None:
+        print("The number of explored nodes of {}: ".format("Tri-A*"), c)
+        print("The whole path: ", path)
+        print("The length of the whole path", len(path))
+        display_path(path, graph)
+    else:
+        print("No Path Found.")
+    print('Tri-A star Path Cost:', cost)
+    print("Tri-directional search duration:", (time.time() - cur_time))
+
     mainloop()  # Let TK windows stay still
 
 
