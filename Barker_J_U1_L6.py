@@ -234,7 +234,7 @@ def bfs(start, goal, graph, col):
 
                 drawLine(canvas, *graph[5][s], *graph[5][a], col)
         counter += 1
-        if counter % 1 == 0: ROOT.update()
+        if counter % 1000 == 0: ROOT.update()
     return None
 
 
@@ -278,7 +278,7 @@ def bi_bfs(start, goal, graph, col):
 
                     drawLine(canvas, *graph[5][s], *graph[5][a], col)
             counter += 1
-            if counter % 1 == 0: ROOT.update()
+            if counter % 1000 == 0: ROOT.update()
     return "No Solution :("
 
 
@@ -326,7 +326,7 @@ def a_star(start, goal, graph, col, heuristic=dist_heuristic):
                     drawLine(canvas, *graph[5][child], *graph[5][current], col)
                     frontier.push((f, child, pp))
         counter += 1
-        if counter % 1 == 0: ROOT.update()
+        if counter % 1000 == 0: ROOT.update()
 
 
 def bi_a_star(start, goal, graph, col, ROOT, canvas=None, heuristic=dist_heuristic):
@@ -400,7 +400,7 @@ def bi_a_star(start, goal, graph, col, ROOT, canvas=None, heuristic=dist_heurist
                 # frontier.push((pc, child))
 
         counter += 1
-        if counter % 1 == 1000: ROOT.update()
+        if counter % 1000 == 0: ROOT.update()
 
     return "No Solution :("
 
@@ -413,19 +413,20 @@ def tri_directional(city1, city2, city3, graph, col, heuristic=dist_heuristic):
     draw_all_edges(ROOT, canvas, graph)
 
     path12, cost12, c12 = bi_a_star(city1, city2, graph, col, ROOT, canvas)
-    print("The number of explored nodes of {}: ".format("Bi-A*"), c12)
+    print("The number of explored nodes of {}: ".format("Bi-A* 1"), c12)
     print("The whole path: ", path12)
     print("The length of the partial path", len(path12))
 
     path13, cost13, c13 = bi_a_star(city1, city3, graph, col, ROOT, canvas)
-    print("The number of explored nodes of {}: ".format("Bi-A*"), c13)
+    print("The number of explored nodes of {}: ".format("Bi-A* 2"), c13)
     print("The whole path: ", path13)
     print("The length of the partial path", len(path13))
 
     path23, cost23, c23 = bi_a_star(city2, city3, graph, col, ROOT, canvas)
-    print("The number of explored nodes of {}: ".format("Bi-A*"), c23)
+    print("The number of explored nodes of {}: ".format("Bi-A* 3"), c23)
     print("The whole path: ", path23)
     print("The length of the partial path", len(path23))
+    print()
 
     path = [(path12, cost12), (path13, cost13), (path23, cost23)]
     sorted_out_path = sorted(path, key=lambda paths: len(paths[0]))
@@ -445,7 +446,7 @@ def main():
     start, goal = input("Start city: "), input("Goal city: ")
     third = input("Third city for tri-directional: ")
     graph = make_graph("rrNodes.txt", "rrNodeCity.txt", "rrEdges.txt")  # Task 1
-    """
+
     cur_time = time.time()
 
     path, cost, c = bfs(graph[2][start], graph[2][goal], graph, 'yellow')  # graph[2] is city to node
@@ -503,10 +504,10 @@ def main():
     print ('Bi-A star Path Cost:', cost)
     print ("Bi-A star duration: ", (time.time() - cur_time))
     print ()
-    """
+
     print("Tri-Search of ({}, {}, {})".format(start, goal, third))
     cur_time = time.time()
-    path, cost, c = tri_directional(graph[2][start], graph[2][goal], graph[2][third], graph, 'blue')
+    path, cost, c = tri_directional(graph[2][start], graph[2][goal], graph[2][third], graph, 'pink')
     if path is not None:
         print("The number of explored nodes of {}: ".format("Tri-A*"), c)
         print("The whole path: ", path)
